@@ -1,3 +1,5 @@
+window.addEventListener("load", presentation);
+
 let canvas = document.getElementById("snake");
 let context = canvas.getContext("2d");
 let box = 32;
@@ -7,6 +9,7 @@ snake[0] = {
   y: 8 * box,
 };
 let direction = "right";
+let count_points = 0;
 
 let food = {
   x: Math.floor(Math.random() * 15 + 1) * box,
@@ -23,6 +26,58 @@ function criarCobrinha() {
     context.fillStyle = "green";
     context.fillRect(snake[i].x, snake[i].y, box, box);
   }
+}
+
+function presentation() {
+  Swal.fire({
+    title:
+      "<div style='display:table-cell; vertical-align:middle; text-align:center'><img id='anaconda' src='img/anaconda.png' width = '20%' ></div>",
+    html:
+      "Este projeto foi desenvolvido para o bootcamp de " +
+      "HTML Web Developer da " +
+      "<a href='https://digitalinnovation.one/' target = '_blank'>DIO</a>",
+    showCancelButton: true,
+    showDenyButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#3085d6",
+    denyButtonColor: "#3085d6",
+    confirmButtonText: '<i class="fas fa-play"></i>',
+    cancelButtonText: '<i class="fab fa-linkedin-in"></i>',
+    denyButtonText: '<i class="fab fa-github"></i>',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      prejogo();
+    } else if (result.isDenied) {
+      //github
+      window.open("https://github.com/wellingtonf-souza");
+      prejogo();
+    } else {
+      //linkedin
+      window.open("https://www.linkedin.com/in/wellington-ferr-souza/");
+      prejogo();
+    }
+  });
+}
+
+function prejogo() {
+  Swal.fire({
+    title: "Selecione um nível",
+    input: "radio",
+    inputOptions: ["Fácil", "Médio", "Difícil"],
+    inputValidator: (value) => {
+      if (!value) {
+        return "É necessário informar um nível de dificuldade";
+      }
+    },
+  }).then((result) => {
+    if (result.value == 0) {
+      let jogo = setInterval(iniciarJogo, 100);
+    } else if (result.value == 1) {
+      let jogo = setInterval(iniciarJogo, 80);
+    } else {
+      let jogo = setInterval(iniciarJogo, 60);
+    }
+  });
 }
 
 document.addEventListener("keydown", update);
@@ -43,7 +98,8 @@ function reiniciar() {
   };
   Swal.fire({
     title: "Game Over",
-    text: "Jogar mais uma vez?",
+    text:
+      "Você fez " + count_points + " pontos. Gostaria de jogar mais uma vez?",
     icon: "error",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
@@ -52,6 +108,7 @@ function reiniciar() {
     cancelButtonText: "Não, obrigado!",
   }).then((result) => {
     if (result.isConfirmed) {
+      count_points = 0;
       snake = [];
       snake[0] = {
         x: 8 * box,
@@ -75,15 +132,15 @@ function iniciarJogo() {
   if (snake[0].y > 15 * box && direction == "down") reiniciar();
   if (snake[0].y < 0 && direction == "up") reiniciar();
 
-  criarBG();
-  criarCobrinha();
-  drawFood();
-
   for (i = 1; i < snake.length; i++) {
     if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
       reiniciar();
     }
   }
+
+  criarBG();
+  criarCobrinha();
+  drawFood();
 
   let snakeX = snake[0].x;
   let snakeY = snake[0].y;
@@ -98,6 +155,7 @@ function iniciarJogo() {
   } else {
     food.x = Math.floor(Math.random() * 15 + 1) * box;
     food.y = Math.floor(Math.random() * 15 + 1) * box;
+    count_points = count_points + 1;
   }
 
   let newHead = {
@@ -106,5 +164,3 @@ function iniciarJogo() {
   };
   snake.unshift(newHead); //adiciona um novo elemento
 }
-
-let jogo = setInterval(iniciarJogo, 80);
