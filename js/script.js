@@ -98,8 +98,7 @@ function reiniciar() {
   };
   Swal.fire({
     title: "Game Over",
-    text:
-      "Você fez " + count_points + " pontos. Gostaria de jogar mais uma vez?",
+    text: "Você fez " + count_points + " pontos. Jogar mais uma vez?",
     icon: "error",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
